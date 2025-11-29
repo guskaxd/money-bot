@@ -623,7 +623,7 @@ async function checkExpirationNow(userId, expirationDate) {
     // Notificação de expiração
     if (daysLeft <= 0) {
         const CUSTO_PLANO_TRIMESTRAL = 1200;
-        const CUSTO_PLANO_MENSAL = 349;
+        const CUSTO_PLANO_MENSAL = 500;
         const CUSTO_PLANO_SEMANAL = 200;
     
         const balanceDoc = await userBalances.findOne({ userId });
@@ -945,7 +945,7 @@ app.post('/webhook-mercadopago', async (req, res) => {
 
                 // Lógica de Bônus (sem alterações)
                 const VALOR_TRIMESTRAL = 1200;
-                const VALOR_MENSAL = 349;
+                const VALOR_MENSAL = 500;
                 const VALOR_SEMANAL = 200;
                 const BONUS_TRIMESTRAL = 600;
                 const BONUS_MENSAL = 250;
@@ -1117,7 +1117,7 @@ client.once('clientReady', async () => {
             `Clique nos botões abaixo para gerenciar sua conta:\n\n` +
             `📌 Como funciona?\n\nClique no botão abaixo para adicionar saldo à sua conta.\n\n` +
             `⚠️ Importante!\n\nAntes de fazer qualquer pagamento, lembre-se de que não há reembolsos para adição de créditos. \n\n` +
-            `💰 Valores\n\nPara ativar sua assinatura pela primeira vez, você precisa ter pelo menos R$ 200,00 ou R$ 349,00 de saldo.\n\n` +
+            `💰 Valores\n\nPara ativar sua assinatura pela primeira vez, você precisa ter pelo menos R$ 200,00 ou R$ 500,00 de saldo.\n\n` +
             `💡 *Se você não estiver registrado, clique em **#registrar-se** primeiro.*`
         )
         .setColor('#FFD700');
@@ -1328,7 +1328,7 @@ client.on('interactionCreate', async (interaction) => {
 
             const inputValor = new TextInputBuilder()
                 .setCustomId('valor')
-                .setLabel('Valor desejado (ex: 200 ou 349)')
+                .setLabel('Valor desejado (ex: 200 ou 500)')
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder('Digite o valor em reais')
                 .setRequired(false);
@@ -1469,7 +1469,7 @@ if (interaction.isModalSubmit() && interaction.customId === 'formulario_saldo') 
         }
 
         const planoTrimestral = 1200;
-        const planoMensal = 349;
+        const planoMensal = 500;
         const planoSemanal = 200;
         
         let valorFinalAPagar = 0;
