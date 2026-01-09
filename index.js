@@ -1421,26 +1421,54 @@ if (interaction.isModalSubmit() && interaction.customId === 'formulario_saldo') 
             } else {
                 // Lógica antiga para cupons de texto
                 const cupomUpper = cupomInput.toUpperCase();
+
                 if (cupomUpper === '1DAYVIP') {
-                    // (Sua lógica para o cupom 'CUPOM' continua a mesma)
-                    const couponUsed = await couponUsage.findOne({ userId, coupon: 'CUPOM' });
+                    // CORREÇÃO: Verificar o cupom correto '1DAYVIP' e não 'CUPOM'
+                    const couponUsed = await couponUsage.findOne({ userId, coupon: '1DAYVIP' }); 
+                    
                     if (couponUsed) {
-                        await interaction.editReply({ content: '❌ Você já utilizou o cupom CUPOM anteriormente.' });
+                        await interaction.editReply({ 
+                            content: '❌ Você já utilizou o cupom **1DAYVIP** anteriormente.' 
+                        });
                         return;
                     }
+
                     const now = new Date();
                     let expirationDate;
                     const existingExpiration = await expirationDates.findOne({ userId });
+
                     if (existingExpiration && new Date(existingExpiration.expirationDate) > now) {
                         expirationDate = new Date(existingExpiration.expirationDate);
                     } else {
                         expirationDate = new Date(now);
                     }
+
+                    // Adiciona 1 dia
                     expirationDate.setDate(expirationDate.getDate() + 1);
-                    await expirationDates.updateOne({ userId }, { $set: { expirationDate: expirationDate, createdAt: now } }, { upsert: true });
+
+                    // Atualiza a data de expiração e garante o cargo VIP
+                    await expirationDates.updateOne(
+                        { userId }, 
+                        { $set: { expirationDate: expirationDate, updatedAt: now } }, 
+                        { upsert: true }
+                    );
+                    
+                    // Marcar como usado para este usuário
                     await couponUsage.insertOne({ userId, coupon: '1DAYVIP', usedAt: now });
-                    await logCouponUsage('CUPOM', '🎟️ Cupom de VIP Direto Utilizado', 'Um usuário ativou VIP por 1 dia com um cupom.');
-                    await interaction.editReply({ content: `✅ Cupom CUPOM aplicado com sucesso! Sua assinatura foi estendida por 1 dia.` });
+
+                    await logCouponUsage('1DAYVIP', '🎟️ Cupom de VIP Direto Utilizado', 'Um usuário ativou VIP por 1 dia com o cupom 1DAYVIP.');
+                    
+                    // Garantir que o usuário receba o cargo VIP imediatamente
+                    const guild = interaction.guild;
+                    const member = await guild.members.fetch(userId).catch(() => null);
+                    if (member) {
+                        await member.roles.add(VIP_ROLE_ID).catch(err => console.error("Erro ao adicionar cargo via cupom:", err));
+                        await member.roles.remove(AGUARDANDO_PAGAMENTO_ROLE_ID).catch(() => {});
+                    }
+
+                    await interaction.editReply({ 
+                        content: `✅ Cupom **1DAYVIP** aplicado com sucesso! Sua assinatura foi estendida por 1 dia e seu acesso VIP foi liberado.` 
+                    });
                     return;
                 } else if (newIndicationCoupons.includes(cupomUpper)) {
                     await registeredUsers.updateOne({ userId }, { $set: { indication: cupomUpper } });
