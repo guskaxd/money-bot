@@ -1358,7 +1358,7 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
 
-    const newIndicationCoupons = ['CUPOM'];
+    const newIndicationCoupons = ['1DAYVIP'];
 
 // SUBSTITUA TODA A INTERAÇÃO 'formulario_saldo' POR ESTA
 if (interaction.isModalSubmit() && interaction.customId === 'formulario_saldo') {
@@ -1421,7 +1421,7 @@ if (interaction.isModalSubmit() && interaction.customId === 'formulario_saldo') 
             } else {
                 // Lógica antiga para cupons de texto
                 const cupomUpper = cupomInput.toUpperCase();
-                if (cupomUpper === 'CUPOM') {
+                if (cupomUpper === '1DAYVIP') {
                     // (Sua lógica para o cupom 'CUPOM' continua a mesma)
                     const couponUsed = await couponUsage.findOne({ userId, coupon: 'CUPOM' });
                     if (couponUsed) {
@@ -1436,11 +1436,11 @@ if (interaction.isModalSubmit() && interaction.customId === 'formulario_saldo') 
                     } else {
                         expirationDate = new Date(now);
                     }
-                    expirationDate.setDate(expirationDate.getDate() + 2);
+                    expirationDate.setDate(expirationDate.getDate() + 1);
                     await expirationDates.updateOne({ userId }, { $set: { expirationDate: expirationDate, createdAt: now } }, { upsert: true });
-                    await couponUsage.insertOne({ userId, coupon: 'CUPOM', usedAt: now });
-                    await logCouponUsage('CUPOM', '🎟️ Cupom de VIP Direto Utilizado', 'Um usuário ativou VIP por 2 dias com um cupom.');
-                    await interaction.editReply({ content: `✅ Cupom CUPOM aplicado com sucesso! Sua assinatura foi estendida por 2 dias.` });
+                    await couponUsage.insertOne({ userId, coupon: '1DAYVIP', usedAt: now });
+                    await logCouponUsage('CUPOM', '🎟️ Cupom de VIP Direto Utilizado', 'Um usuário ativou VIP por 1 dia com um cupom.');
+                    await interaction.editReply({ content: `✅ Cupom CUPOM aplicado com sucesso! Sua assinatura foi estendida por 1 dia.` });
                     return;
                 } else if (newIndicationCoupons.includes(cupomUpper)) {
                     await registeredUsers.updateOne({ userId }, { $set: { indication: cupomUpper } });
